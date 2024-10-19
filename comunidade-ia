@@ -1,0 +1,156 @@
+// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+app.use(express.static('public')); // Serve arquivos estáticos
+
+let users = []; // Simulação de banco de dados
+
+// Endpoint de registro
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+    const existingUser = users.find(u => u.username === username);
+    if (existingUser) {
+        return res.json({ success: false, message: 'Usuário já existe!' });
+    }
+    users.push({ username, password });
+    res.json({ success: true });
+});
+
+// Endpoint de login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, message: "Usuário ou senha incorretos!" });
+    }
+});
+
+// Rota da comunidade
+app.get('/community', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Comunidade IA</title>
+            <style>
+                body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }
+                .community-container { max-width: 600px; margin: 50px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+                h1, h2 { text-align: center; }
+                .chat-room { margin-top: 20px; }
+                #messages { border: 1px solid #ddd; padding: 10px; height: 200px; overflow-y: auto; margin-bottom: 10px; background-color: #f9f9f9; }
+                #message-input { width: calc(100% - 80px); }
+                button { padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+                button:hover { background-color: #0056b3; }
+            </style>
+        </head>
+        <body>
+            <div class="community-container">
+                <h1>Bem-vindo à Comunidade de IAs!</h1>
+                <div class="chat-room">
+                    <h2>Sala de Conversa</h2>
+                    <div id="messages"></div>
+                    <input type="text" id="message-input" placeholder="Digite sua mensagem aqui..." />
+                    <button id="send-btn">Enviar</button>
+                </div>
+            </div>
+            <script>
+                document.getElementById('send-btn').addEventListener('click', function() {
+                    const messageInput = document.getElementById('message-input');
+                    const message = messageInput.value;
+                    if (message) {
+                        const messagesDiv = document.getElementById('messages');
+                        messagesDiv.innerHTML += \`<p>\${message}</p>\`;
+                        messageInput.value = '';
+                    }
+                });
+            </script>
+        </body>
+        </html>
+    `);
+});
+
+// Serve a página inicial
+app.get('/', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Comunidade IA</title>
+            <style>
+                body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 50px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+                h1 { text-align: center; }
+                form { display: flex; flex-direction: column; }
+                input { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+                button { padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+                button:hover { background-color: #0056b3; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Bem-vindo à Comunidade IA</h1>
+                <form id="login-form">
+                    <input type="text" id="username" placeholder="Usuário" required />
+                    <input type="password" id="password" placeholder="Senha" required />
+                    <button type="submit">Login</button>
+                </form>
+                <button id="register-btn">Registrar</button>
+                <div id="login-response"></div>
+            </div>
+            <script>
+                document.getElementById('login-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseDiv = document.getElementById('login-response');
+                        if (data.success) {
+                            responseDiv.textContent = 'Login bem-sucedido! Redirecionando para a comunidade...';
+                            setTimeout(() => { window.location.href = '/community'; }, 2000);
+                        } else {
+                            responseDiv.textContent = data.message;
+                        }
+                    });
+                });
+
+                document.getElementById('register-btn').addEventListener('click', function() {
+                    const username = prompt("Escolha um nome de usuário:");
+                    const password = prompt("Escolha uma senha:");
+                    if (username && password) {
+                        fetch('/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        })
+                        .then(response => response.json())
+                        .then(data => { alert(data.success ? 'Registro bem-sucedido!' : data.message); });
+                    }
+                });
+            </script>
+        </body>
+        </html>
+    `);
+});
+
+// Inicia o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando em http://localhost:${port}`);
+});
