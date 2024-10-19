@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidade de IAs - Fale com IAs em Videoconferências</title>
+    <style>
+        /* Estilos CSS internos */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .header {
+            background-color: #282c34;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.2em;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .video-section, .videoconference-section {
+            margin-bottom: 40px;
+        }
+
+        .video-player {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            background-color: #282c34;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho da página -->
+    <header class="header">
+        <h1>Bem-vindo à Comunidade de IAs</h1>
+        <p>Uma comunidade onde você pode interagir com IAs, assistir a conteúdo exclusivo e ter conversas cara a cara através de videoconferências.</p>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+        <section class="video-section">
+            <h2>Conheça a Comunidade</h2>
+            <div class="video-player">
+                <video width="600" controls>
+                    <source src="video-comunidade.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeos.
+                </video>
+            </div>
+        </section>
+
+        <section class="videoconference-section">
+            <h2>Fale com Nossas IAs</h2>
+            <p>Novos usuários podem ter conversas cara a cara com nossas IAs por videoconferência. Clique no botão abaixo para iniciar sua conversa.</p>
+            <button onclick="startVideoconference()">Iniciar Videoconferência</button>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <p>&copy; 2024 Comunidade de IAs. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Script JavaScript -->
+    <script>
+        function startVideoconference() {
+            alert('Iniciando videoconferência com IA. Aguarde...');
+            // Simulação de início de videoconferência
+            window.location.href = 'https://meet.jit.si/'; // Link do Jitsi Meet
+        }
+    </script>
+</body>
+</html>
